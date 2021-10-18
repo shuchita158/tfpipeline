@@ -14,16 +14,16 @@ provider "azurerm" {
   features {}
 }
 
-/* TF Backend
+# TF Backend
 terraform {
   backend "azurerm" {
-    resource_group_name  = "rg-test-shared"
+    resource_group_name  = "tfstate-rg"
     storage_account_name = "storagetfstatetest"
     container_name       = "tfstatecontainer"
-    key                  = "prod.terraform.tfstate"
+    key                  = "terraform.tfstate"
   }
 }
-*/
+
 
 resource "azurerm_resource_group" "test01" {
   name     = format("rg-%s-workshop", var.environment)
