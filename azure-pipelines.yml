@@ -8,28 +8,40 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
+stages:
+- stage: Terraform Plan
+  variables: 
+    ENV: 'Dev' 
+  jobs:
+  - job: Plan TF Infra
+  steps:
+  - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+    inputs:
+      terraformVersion: '0.15.0'
+  - task: TerraformTaskV2@2
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      backendServiceArm: 'shuchita-payg'
+      backendAzureRmResourceGroupName: 'tfstate-rg'
+      backendAzureRmStorageAccountName: 'storagetfstatetest'
+      backendAzureRmContainerName: 'tfstatecontainer'
+      backendAzureRmKey: 'terraform.tfstate'
+  - task: TerraformTaskV2@2
+    inputs:
+      provider: 'azurerm'
+      command: 'plan'
+      environmentServiceNameAzureRM: 'shuchita-payg'
+  
+- stage: Terraform Apply Env1
+  variables:
+    ENV: 'Dev'
+  jobs:
+  - job: Apply TF
+  steps:
+  - task: TerraformTaskV2@2
+    inputs:
+      provider: 'azurerm'
+      command: 'apply'
+      environmentServiceNameAzureRM: 'shuchita-payg'
 
-steps:
-- task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
-  inputs:
-    terraformVersion: '0.15.0'
-- task: TerraformTaskV2@2
-  inputs:
-    provider: 'azurerm'
-    command: 'init'
-    backendServiceArm: 'shuchita-payg'
-    backendAzureRmResourceGroupName: 'tfstate-rg'
-    backendAzureRmStorageAccountName: 'storagetfstatetest'
-    backendAzureRmContainerName: 'tfstatecontainer'
-    backendAzureRmKey: 'terraform.tfstate'
-- task: TerraformTaskV2@2
-  inputs:
-    provider: 'azurerm'
-    command: 'plan'
-    environmentServiceNameAzureRM: 'shuchita-payg'
-
-- task: TerraformTaskV2@2
-  inputs:
-    provider: 'azurerm'
-    command: 'apply'
-    environmentServiceNameAzureRM: 'shuchita-payg'
