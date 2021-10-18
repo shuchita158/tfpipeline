@@ -16,11 +16,11 @@ stages:
   - job: DeployDev
     steps:
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
-      displayName: 'Install Terraform 0.15.0"
+      displayName: 'Install Terraform 0.15.0'
       inputs:
         terraformVersion: '0.15.0'
     - task: TerraformTaskV2@2
-      displayName: 'Terraform Init Dev"
+      displayName: 'Terraform Init Dev'
       inputs:
         provider: 'azurerm'
         command: 'init'
