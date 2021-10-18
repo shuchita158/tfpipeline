@@ -10,10 +10,14 @@ pool:
   vmImage: ubuntu-latest
 stages:
 - stage: TerraformDeployDev
+  displayName: 'Terraform Deployment Dev'
+
   variables: 
     ENV: 'Dev' 
   jobs:
   - job: DeployDev
+    displayName: 'Terraform deploy Dev'
+
     steps:
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
       displayName: 'Install Terraform 0.15.0'
@@ -28,9 +32,11 @@ stages:
         backendAzureRmResourceGroupName: 'tfstate-rg'
         backendAzureRmStorageAccountName: 'storagetfstatetest'
         backendAzureRmContainerName: 'tfstatecontainer'
-        backendAzureRmKey: 'terraform.tfstate'
+        backendAzureRmKey: 'dev.terraform.tfstate'
         workingDirectory: $(System.DefaultWorkingDirectory)/environment/dev
     - task: TerraformTaskV2@2
+      displayName: 'Terraform Plan Dev'
+
       inputs:
         provider: 'azurerm'
         command: 'plan'
@@ -38,6 +44,7 @@ stages:
         workingDirectory: $(System.DefaultWorkingDirectory)/environment/dev
 
     - task: TerraformTaskV2@2
+      displayName: 'Terraform Apply Dev'
       inputs:
         provider: 'azurerm'
         command: 'apply'
@@ -45,6 +52,8 @@ stages:
         workingDirectory: $(System.DefaultWorkingDirectory)/environment/dev
   
 - stage: TerraformDeployTest
+  displayName: 'Terraform Deployment Test'
+
   variables:
     ENV: 'test'
   jobs:
@@ -62,8 +71,12 @@ stages:
           onTimeout: 'resume'
   
   - job: ApplyTF
+    displayName: 'Terraform Deploy Test'
+
     steps:
     - task: TerraformTaskV2@2
+      displayName: 'Terraform Init Test'
+
       inputs:
         provider: 'azurerm'
         command: 'init'
@@ -71,10 +84,12 @@ stages:
         backendAzureRmResourceGroupName: 'tfstate-rg'
         backendAzureRmStorageAccountName: 'storagetfstatetest'
         backendAzureRmContainerName: 'tfstatecontainer'
-        backendAzureRmKey: 'terraform.tfstate'
+        backendAzureRmKey: 'test.terraform.tfstate'
         workingDirectory: $(System.DefaultWorkingDirectory)/environment/test
 
     - task: TerraformTaskV2@2
+      displayName: 'Terraform Apply Test'
+
       inputs:
         provider: 'azurerm'
         command: 'apply'
