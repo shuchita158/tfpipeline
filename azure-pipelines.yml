@@ -12,7 +12,7 @@ pool:
 steps:
 - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
   inputs:
-    terraformVersion: 'latest'
+    terraformVersion: '0.15.0'
 - task: TerraformTaskV2@2
   inputs:
     provider: 'azurerm'
