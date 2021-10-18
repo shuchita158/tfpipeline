@@ -42,6 +42,15 @@ stages:
     - task: TerraformTaskV2@2
       inputs:
         provider: 'azurerm'
+        command: 'init'
+        backendServiceArm: 'shuchita-payg'
+        backendAzureRmResourceGroupName: 'tfstate-rg'
+        backendAzureRmStorageAccountName: 'storagetfstatetest'
+        backendAzureRmContainerName: 'tfstatecontainer'
+        backendAzureRmKey: 'terraform.tfstate'
+    - task: TerraformTaskV2@2
+      inputs:
+        provider: 'azurerm'
         command: 'apply'
         environmentServiceNameAzureRM: 'shuchita-payg'
 
