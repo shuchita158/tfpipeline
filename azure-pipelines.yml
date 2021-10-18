@@ -9,11 +9,11 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 stages:
-- stage: Terraform Plan
+- stage: TerraformPlan
   variables: 
     ENV: 'Dev' 
   jobs:
-  - job: Plan TF Infra
+  - job: PlanTFInfra
     steps:
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
       inputs:
@@ -33,11 +33,11 @@ stages:
         command: 'plan'
         environmentServiceNameAzureRM: 'shuchita-payg'
   
-- stage: Terraform Apply Env1
+- stage: TerraformApplydev
   variables:
     ENV: 'Dev'
   jobs:
-  - job: Apply TF
+  - job: ApplyTF
     steps:
     - task: TerraformTaskV2@2
       inputs:
