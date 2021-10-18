@@ -9,16 +9,18 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 stages:
-- stage: TerraformPlan
+- stage: TerraformDeployDev
   variables: 
     ENV: 'Dev' 
   jobs:
-  - job: PlanTFInfra
+  - job: DeployDev
     steps:
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+      displayName: 'Install Terraform 0.15.0"
       inputs:
         terraformVersion: '0.15.0'
     - task: TerraformTaskV2@2
+      displayName: 'Terraform Init Dev"
       inputs:
         provider: 'azurerm'
         command: 'init'
@@ -27,15 +29,24 @@ stages:
         backendAzureRmStorageAccountName: 'storagetfstatetest'
         backendAzureRmContainerName: 'tfstatecontainer'
         backendAzureRmKey: 'terraform.tfstate'
+        workingDirectory: $(System.DefaultWorkingDirectory)/environment/dev
     - task: TerraformTaskV2@2
       inputs:
         provider: 'azurerm'
         command: 'plan'
         environmentServiceNameAzureRM: 'shuchita-payg'
+        workingDirectory: $(System.DefaultWorkingDirectory)/environment/dev
+
+    - task: TerraformTaskV2@2
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        environmentServiceNameAzureRM: 'shuchita-payg'
+        workingDirectory: $(System.DefaultWorkingDirectory)/environment/dev
   
-- stage: TerraformApplydev
+- stage: TerraformDeployTest
   variables:
-    ENV: 'Dev'
+    ENV: 'test'
   jobs:
   - job: waitForValidation
     displayName: Wait for external validation  
@@ -61,9 +72,12 @@ stages:
         backendAzureRmStorageAccountName: 'storagetfstatetest'
         backendAzureRmContainerName: 'tfstatecontainer'
         backendAzureRmKey: 'terraform.tfstate'
+        workingDirectory: $(System.DefaultWorkingDirectory)/environment/test
+
     - task: TerraformTaskV2@2
       inputs:
         provider: 'azurerm'
         command: 'apply'
         environmentServiceNameAzureRM: 'shuchita-payg'
+        workingDirectory: $(System.DefaultWorkingDirectory)/environment/test
 
