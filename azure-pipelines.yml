@@ -32,7 +32,7 @@ stages:
         backendAzureRmResourceGroupName: 'tfstate-rg'
         backendAzureRmStorageAccountName: 'storagetfstatetest'
         backendAzureRmContainerName: 'tfstatecontainer'
-        backendAzureRmKey: 'dev.terraform.tfstate'
+        backendAzureRmKey: '$(environment).terraform.tfstate'
         workingDirectory: $(System.DefaultWorkingDirectory)/environment/dev
     - task: TerraformTaskV2@2
       displayName: 'Terraform Plan Dev'
@@ -55,7 +55,7 @@ stages:
   displayName: 'Terraform Deployment Test'
 
   variables:
-    ENV: 'test'
+    - group: test-tf-vars
   jobs:
   - job: waitForValidation
     displayName: Wait for external validation  
@@ -84,7 +84,7 @@ stages:
         backendAzureRmResourceGroupName: 'tfstate-rg'
         backendAzureRmStorageAccountName: 'storagetfstatetest'
         backendAzureRmContainerName: 'tfstatecontainer'
-        backendAzureRmKey: 'test.terraform.tfstate'
+        backendAzureRmKey: '$(environment).terraform.tfstate'
         workingDirectory: $(System.DefaultWorkingDirectory)/environment/test
 
 
@@ -93,5 +93,5 @@ stages:
         command: 'apply'
         environmentServiceName: 'shuchita-payg'
         workingDirectory: $(System.DefaultWorkingDirectory)/environment/test
-        commandOptions: -var environment=preprod
+        commandOptions: -var environment=$(environment)
 
