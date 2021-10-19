@@ -87,12 +87,11 @@ stages:
         backendAzureRmKey: 'test.terraform.tfstate'
         workingDirectory: $(System.DefaultWorkingDirectory)/environment/test
 
-    - task: TerraformTaskV2@2
-      displayName: 'Terraform Apply Test'
 
+    - task: TerraformCLI@0
       inputs:
-        provider: 'azurerm'
         command: 'apply'
-        environmentServiceNameAzureRM: 'shuchita-payg'
+        environmentServiceName: 'shuchita-payg'
         workingDirectory: $(System.DefaultWorkingDirectory)/environment/test
+        commandOptions: -var environment=preprod
 
