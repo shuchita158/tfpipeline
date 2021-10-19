@@ -13,7 +13,7 @@ stages:
   displayName: 'Terraform Deployment Dev'
 
   variables: 
-    ENV: 'Dev' 
+    - group: dev-tf-vars 
   jobs:
   - job: DeployDev
     displayName: 'Terraform deploy Dev'
